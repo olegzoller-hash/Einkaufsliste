@@ -11,12 +11,17 @@
       "officialWebsite": "https://www.hit.de/",
       "officialOffersPage": "https://www.hit.de/angebote/",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "official_offers_webpage; no confirmed offer JSON API",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [],
+      "references": [
+        "https://www.hit.de/faq/angebote"
+      ],
+      "verificationNotes": "Die HIT-Tierdatenbank hi-tier.de ist nicht die Supermarktkette HIT. Keine Angebots-JSON-API bestätigt."
     },
     {
       "id": "aldi-nord",
@@ -24,12 +29,30 @@
       "officialWebsite": "https://www.aldi-nord.de/",
       "officialOffersPage": "https://www.aldi-nord.de/angebote.html",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "official_webpage_with_third_party_documented_internal_data",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [
+        {
+          "url": "https://www.aldi-nord.de/angebote.html",
+          "method": "GET",
+          "responseFormat": "HTML with embedded structured data (not standalone JSON feed)",
+          "endpointKind": "embedded_page_data",
+          "authentication": "none for web page",
+          "verified": "documented_by_third_party_not_live_tested",
+          "usableAsFeedUrl": false,
+          "reference": "https://github.com/FaserF/ha-aldi",
+          "notes": "Exakte aktuelle iPaper/Next.js-Request-URL ist dynamisch; Parser, Nutzungsprüfung und Test nötig."
+        }
+      ],
+      "references": [
+        "https://github.com/FaserF/ha-aldi",
+        "https://www.aldi-nord.de/angebote.html"
+      ],
+      "verificationNotes": "Die Seite und interne Datenstruktur sind nicht identisch mit einer frei nutzbaren JSON-API."
     },
     {
       "id": "lidl",
@@ -37,12 +60,40 @@
       "officialWebsite": "https://www.lidl.de/",
       "officialOffersPage": "https://www.lidl.de/c/online-prospekte/s10005610/",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "official_leaflet_webpage; third_party_JSON_API_available_with_conditions",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [
+        {
+          "url": "https://api.api.sh/lidl/v1/search",
+          "method": "GET",
+          "responseFormat": "JSON",
+          "endpointKind": "third_party_product_search",
+          "authentication": "provider API key / registration",
+          "verified": "provider_documented_not_live_tested",
+          "usableAsFeedUrl": false,
+          "reference": "https://api.sh/lidl-api",
+          "notes": "Online-Shop-Produkte, keine geprüfte regionale Wochenprospekt-Vollständigkeit. API-Antwort passt nicht zum Natur-Feedformat."
+        },
+        {
+          "url": "https://www.lidl.de/c/online-prospekte/s10005610/",
+          "method": "GET",
+          "responseFormat": "HTML",
+          "endpointKind": "official_leaflet_landing_page",
+          "authentication": "none for web page",
+          "verified": "public_web_page",
+          "usableAsFeedUrl": false,
+          "notes": "Nicht mit direkt nutzbarem JSON-Feed verwechseln."
+        }
+      ],
+      "references": [
+        "https://api.sh/lidl-api",
+        "https://www.lidl.de/c/online-prospekte/s10005610/"
+      ],
+      "verificationNotes": "Eine kostenpflichtige Nutzung oder ein Schlüssel wird nicht automatisch aktiviert."
     },
     {
       "id": "netto",
@@ -50,25 +101,35 @@
       "officialWebsite": "https://www.netto-online.de/",
       "officialOffersPage": "https://www.netto-online.de/",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "official_store_offers_webpage",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [],
+      "references": [
+        "https://apify.com/nerdrx/de-supermarket-offers"
+      ],
+      "verificationNotes": "Netto Marken-Discount: Drittanbieter berichtet von filial-/sessionabhängigen Angeboten und technisch geschützten Daten-Endpunkten; keine Umgehung implementiert."
     },
     {
       "id": "trinkgut",
       "name": "Trink gut",
       "officialWebsite": "https://www.trinkgut.de/",
-      "officialOffersPage": "https://www.trinkgut.de/",
+      "officialOffersPage": "https://www.trinkgut.de/angebote",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "official_store_offers_webpage",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [],
+      "references": [
+        "https://www.trinkgut.de/angebote"
+      ],
+      "verificationNotes": "Filialauswahl für regionale Angebote nötig; keine zulässig nutzbare JSON-API bestätigt."
     },
     {
       "id": "dm",
@@ -76,12 +137,41 @@
       "officialWebsite": "https://www.dm.de/",
       "officialOffersPage": "https://www.dm.de/",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "undocumented_product_JSON_search_not_offers_feed",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [
+        {
+          "url": "https://product-search.services.dmtech.com/de/search?query=milch",
+          "method": "GET",
+          "responseFormat": "JSON (reported)",
+          "endpointKind": "undocumented_product_search",
+          "authentication": "not specified publicly",
+          "verified": "third_party_report_only; direct_access_not_verified",
+          "usableAsFeedUrl": false,
+          "reference": "https://github.com/NiklasNeugebauer/dm-availability-bot",
+          "notes": "Undokumentierte öffentliche Webservice-Route; Suchresultate sind keine geprüften Wochenangebote. Region/Preisgültigkeit und Nutzungsrecht ungeklärt."
+        },
+        {
+          "url": "https://products.dm.de/product/de/search?q=milch&hideFacets=false&hideSorts=false&pageSize=10",
+          "method": "GET",
+          "responseFormat": "JSON (reported)",
+          "endpointKind": "undocumented_legacy_product_search",
+          "authentication": "not specified",
+          "verified": "third_party_report_only; direct_access_not_verified",
+          "usableAsFeedUrl": false,
+          "reference": "https://github.com/deto1986/dm2telegraf",
+          "notes": "Alternativer älterer Endpoint; nicht als aktueller Angebotsfeed bestätigt."
+        }
+      ],
+      "references": [
+        "https://github.com/NiklasNeugebauer/dm-availability-bot",
+        "https://github.com/deto1986/dm2telegraf"
+      ],
+      "verificationNotes": "Keine dieser URLs enthält bereits eine brauchbare, zulässige Angebotsliste für den bestehenden Python-Workflow."
     },
     {
       "id": "combi",
@@ -89,12 +179,33 @@
       "officialWebsite": "https://www.combi.de/",
       "officialOffersPage": "https://www.combi.de/",
       "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
-      "sourceType": "official_webpage_reference_only",
+      "sourceType": "official_offers_webpage_only",
       "automatedReadable": false,
-      "integrationStatus": "not_implemented_no_authorized_structured_feed",
-      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "integrationStatus": "not_implemented_unverified_or_incompatible_feed",
+      "permissions": "Vor Aktivierung Nutzungsrecht, regionalen Geltungsbereich und zuverlässige Angebotsdaten prüfen; keine Umgehung von Zugangsschutz.",
       "lastSuccessfulFetch": null,
-      "feedUrl": null
+      "feedUrl": null,
+      "candidates": [],
+      "references": [
+        "https://www.combi.de/"
+      ],
+      "verificationNotes": "Keine stabile, dokumentierte HTTP-JSON-Schnittstelle für Angebote gefunden; Filialbezug prüfen."
     }
-  ]
+  ],
+  "schemaVersion": "2.1-research",
+  "researchedOn": "2026-11-14",
+  "important": "Kandidaten sind keine freigegebenen/erfolgreich getesteten Angebotsfeeds. Der bestehende Natur-Workflow verarbeitet ausschließlich sources[].feedUrl als GET mit JSON-Objekt {\"offers\":[{\"name\",\"market\",\"price\",\"validFrom\",\"validTo\",\"sourceUrl\"}]}. Kandidaten dürfen nicht blind in feedUrl übernommen werden.",
+  "expectedFeedFormat": {
+    "offers": [
+      {
+        "name": "Produktname",
+        "market": "dm",
+        "price": 1.29,
+        "validFrom": "YYYY-MM-DD",
+        "validTo": "YYYY-MM-DD",
+        "sourceUrl": "https://quelle.example/produkt"
+      }
+    ],
+    "note": "Nur Formatbeispiel; kein reales Angebot."
+  }
 }
