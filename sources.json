@@ -11,7 +11,7 @@
       "officialOffersUrl": "https://www.hit.de/maerkte/meschede/angebote",
       "sourceUrl": "https://www.hit.de/maerkte/meschede/angebote",
       "sourceType": "html",
-      "enabled": false,
+      "enabled": true,
       "permissionConfirmed": false,
       "regionalConfirmed": true,
       "region": "Meschede, 59872",
