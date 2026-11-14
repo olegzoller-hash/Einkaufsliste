@@ -2,7 +2,6 @@
   "id": "./",
   "name": "Natur – Einkaufsliste",
   "short_name": "Natur",
-  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f7f0",
