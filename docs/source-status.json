@@ -1,9 +1,9 @@
 {
-  "checkedAt": "2026-11-14T23:18:39Z",
+  "checkedAt": "2026-11-14T23:28:48Z",
   "sources": [
     {
       "market": "hit",
-      "status": "disabled",
+      "status": "unapproved",
       "offers": 0
     },
     {
@@ -37,5 +37,7 @@
       "offers": 0
     }
   ],
-  "errors": []
+  "errors": [
+    "hit: erforderliche Rechte oder regionale Zuordnung fehlen"
+  ]
 }
