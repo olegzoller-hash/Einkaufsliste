@@ -1,53 +1,78 @@
-"""Nur genehmigte JSON-Angebotsfeeds. Kein Scraping und kein Firebase-Zugriff."""
-import json, os, re, sys, urllib.request, urllib.error
+"""Daily offers ingestion; expressly permitted sources only.
+All seven adapters are wired. No source is enabled without source-specific permission.
+No Firebase access; outputs only verified active offers to docs/offers.json.
+"""
+import json,sys,os,urllib.request,urllib.error,hashlib
 from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
-BASE=Path(__file__).resolve().parents[1]
-MARKETS={m['id'] for m in json.loads((BASE/'markets.json').read_text())}
-TODAY=datetime.now(ZoneInfo('Europe/Berlin')).date()
+from adapters import parse_response
+ROOT=Path(__file__).resolve().parents[1]
+NOW=lambda:datetime.now(ZoneInfo('UTC')).isoformat(timespec='seconds').replace('+00:00','Z')
+MAX_BYTES=2_000_000
+
+def fetch(source):
+    url=source.get('feedUrl') if source['sourceType']=='json' else source['sourceUrl']
+    if not isinstance(url,str) or not url.startswith('https://'):raise ValueError('HTTPS-Quelle erforderlich')
+    headers={'User-Agent':'NaturOffers/2.0 (+operator-configured-feed)','Accept':'application/json' if source['sourceType']=='json' else 'text/html,application/xhtml+xml'}
+    env=source.get('feedAuthEnv')
+    if env:
+        if not env.startswith('NATUR_FEED_TOKEN_'):raise ValueError('Nur dedizierte FEED-TOKEN-Namen erlaubt')
+        secret=os.environ.get(env)
+        if not secret:raise ValueError('Fehlendes GitHub-Secret '+env)
+        headers['Authorization']='Bearer '+secret
+    with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=20) as reply:
+        if reply.status!=200:raise RuntimeError('HTTP '+str(reply.status))
+        if int(reply.headers.get('Content-Length','0'))>MAX_BYTES:raise ValueError('Antwort zu groß')
+        body=reply.read(MAX_BYTES+1)
+        if len(body)>MAX_BYTES:raise ValueError('Antwort zu groß')
+        content_type=reply.headers.get('Content-Type','').lower()
+        if source['sourceType']=='json' and 'json' not in content_type:raise ValueError('Unerwarteter Content-Type für JSON')
+        if source['sourceType']=='html' and 'html' not in content_type:raise ValueError('Unerwarteter Content-Type für HTML')
+        return body
+
 def check(raw, source):
-    if not isinstance(raw,dict): raise ValueError('Quelle muss JSON-Objekt sein')
-    clean=[]
-    for o in raw.get('offers',[]):
+    if not isinstance(raw,dict): raise ValueError('JSON-Objekt erforderlich')
+    source = dict({'id':'hit','sourceUrl':'https://example.org/'},**source)
+    return parse_response(json.dumps(raw),dict(source,sourceType='json'))
+
+def run():
+    config=json.loads((ROOT/'sources.json').read_text(encoding='utf-8'))
+    approved=[x for x in config['sources'] if x.get('enabled')]
+    results=[];errors=[];report=[]
+    for source in config['sources']:
+        sid=source['id']
+        if not source.get('enabled'):
+            report.append({'market':sid,'status':'disabled','offers':0})
+            print(f'SKIP {sid}: nicht aktiviert / Zugang unbestätigt');continue
+        if not source.get('permissionConfirmed') or not source.get('regionalConfirmed'):
+            errors.append(sid+': erforderliche Rechte oder regionale Zuordnung fehlen')
+            report.append({'market':sid,'status':'unapproved','offers':0});continue
         try:
-            if not isinstance(o,dict):continue
-            name=o['name']; market=o['market']; price=o['price']; start=o['validFrom']; end=o['validTo']; link=o['sourceUrl']
-            if (not isinstance(name,str) or not name.strip() or len(name)>150 or market not in MARKETS
-                or isinstance(price,bool) or not isinstance(price,(int,float)) or not 0<float(price)<100000
-                or not isinstance(link,str) or not link.startswith('https://')):continue
-            d1=datetime.strptime(start,'%Y-%m-%d').date();d2=datetime.strptime(end,'%Y-%m-%d').date()
-            if not d1<=TODAY<=d2:continue
-            clean.append({'name':name.strip(),'market':market,'price':round(float(price),2),'validFrom':start,'validTo':end,'sourceUrl':link,'retrievedAt':datetime.now(ZoneInfo('UTC')).isoformat().replace('+00:00','Z')})
-        except (KeyError,TypeError,ValueError):continue
-    return clean
-def main():
-    src=json.loads((BASE/'sources.json').read_text())['sources'];found=[];errors=[];active=0
-    for s in src:
-        url=s.get('feedUrl')
-        if not url:print(f"SKIP {s['id']}: keine genehmigte maschinenlesbare Quelle");continue
-        if not url.startswith('https://'):errors.append(s['id']+': feedUrl muss HTTPS sein');continue
-        active+=1
-        try:
-            with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'NaturOffers/1.0'}),timeout=20) as resp:
-                if resp.status!=200:raise RuntimeError('HTTP '+str(resp.status))
-                if int(resp.headers.get('Content-Length','0'))>2_000_000:raise ValueError('Feed zu groß')
-                data=resp.read(2_000_001)
-                if len(data)>2_000_000:raise ValueError('Feed zu groß')
-            raw=json.loads(data);valid=check(raw,s);valid=[o for o in valid if o['market']==s['id']];found.extend(valid)
-            print(f"OK {s['id']}: {len(valid)} gültige Angebote")
-        except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError,ValueError,RuntimeError,KeyError) as e:
-            errors.append(f"{s['id']}: {type(e).__name__} ({getattr(e,'code','')})")
-    unique={ (o['market'],o['name'].casefold(),o['price'],o['validFrom'],o['validTo']):o for o in found }
-    out=BASE/'docs/offers.json'
-    # Bei Fehler nicht versehentlich bisher gültige Daten wegwerfen.
+            rows=parse_response(fetch(source),source)
+            # Zero valid offers can mean empty period / parser drift; it is NOT success.
+            if not rows:raise ValueError('Keine nachweislich gültigen Angebote: Parser oder Quelle prüfen')
+            results.extend(rows)
+            report.append({'market':sid,'status':'ok','offers':len(rows)})
+            print(f'OK {sid}: {len(rows)} gültige Angebote')
+        except (urllib.error.HTTPError,urllib.error.URLError,OSError,TimeoutError,ValueError,RuntimeError,KeyError,UnicodeError) as exc:
+            reason=f'HTTP {exc.code}' if isinstance(exc,urllib.error.HTTPError) else type(exc).__name__
+            errors.append(f'{sid}: {reason}');report.append({'market':sid,'status':'error','reason':reason,'offers':0})
+            print(f'FEHLER {sid}: {reason}',file=sys.stderr)
+    (ROOT/'docs/source-status.json').write_text(json.dumps({'checkedAt':NOW(),'sources':report,'errors':errors},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if errors:
-        print('FEHLER: '+'; '.join(errors),file=sys.stderr)
+        # Preserve previous offers; don't publish partial/incomplete results as exhaustive.
+        print('FAIL: docs/offers.json unverändert; teilweise/defekte Abrufe nicht veröffentlicht.',file=sys.stderr)
         return 1
-    new={'updatedAt':datetime.now(ZoneInfo('UTC')).isoformat().replace('+00:00','Z') if active else None,'offers':list(unique.values()),'note':'Nur Daten aus explizit konfigurierten, genehmigten JSON-Feeds; kein Live-Scraping.'}
-    content=json.dumps(new,ensure_ascii=False,indent=2)+'\n'
-    if out.exists() and json.loads(out.read_text()).get('offers')==new['offers']:
-        print('Unveränderte Angebote – keine neue Datei geschrieben')
-    else:out.write_text(content);print(f"Gespeichert: {len(unique)} Angebote")
+    if not approved:
+        print('Keine freigegebene Quelle aktiv: bisherige Angebotsdatei unverändert.')
+        return 0
+    unique={ (v['market'],v['name'].casefold(),v['price'],v['validFrom'],v['validTo']):v for v in results }
+    existing_path=ROOT/'docs/offers.json'; new_offers=sorted(unique.values(),key=lambda a:(a['market'],a['name'],a['price']))
+    old=json.loads(existing_path.read_text(encoding='utf-8')) if existing_path.exists() else {}
+    if old.get('offers')==new_offers:
+        print('Keine Änderung an den Angebotsdaten');return 0
+    existing_path.write_text(json.dumps({'updatedAt':NOW(),'offers':new_offers,'note':'Nur geprüfte, genehmigte und für die Region bestätigte Feeds.'},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    print(f'Veröffentlicht: {len(new_offers)} valide Angebote')
     return 0
-if __name__=='__main__':sys.exit(main())
+if __name__=='__main__':sys.exit(run())
