@@ -1,0 +1,37 @@
+[
+  {
+    "id": "hit",
+    "name": "HIT",
+    "order": 0
+  },
+  {
+    "id": "aldi-nord",
+    "name": "Aldi Nord",
+    "order": 1
+  },
+  {
+    "id": "lidl",
+    "name": "Lidl",
+    "order": 2
+  },
+  {
+    "id": "netto",
+    "name": "Netto",
+    "order": 3
+  },
+  {
+    "id": "trinkgut",
+    "name": "Trink gut",
+    "order": 4
+  },
+  {
+    "id": "dm",
+    "name": "dm",
+    "order": 5
+  },
+  {
+    "id": "combi",
+    "name": "combi",
+    "order": 6
+  }
+]

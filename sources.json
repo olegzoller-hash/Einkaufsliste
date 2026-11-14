@@ -1,0 +1,100 @@
+{
+  "region": {
+    "postalCode": "59872",
+    "city": "Meschede",
+    "country": "DE"
+  },
+  "sources": [
+    {
+      "id": "hit",
+      "name": "HIT",
+      "officialWebsite": "https://www.hit.de/",
+      "officialOffersPage": "https://www.hit.de/angebote/",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    },
+    {
+      "id": "aldi-nord",
+      "name": "Aldi Nord",
+      "officialWebsite": "https://www.aldi-nord.de/",
+      "officialOffersPage": "https://www.aldi-nord.de/angebote.html",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    },
+    {
+      "id": "lidl",
+      "name": "Lidl",
+      "officialWebsite": "https://www.lidl.de/",
+      "officialOffersPage": "https://www.lidl.de/c/online-prospekte/s10005610/",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    },
+    {
+      "id": "netto",
+      "name": "Netto",
+      "officialWebsite": "https://www.netto-online.de/",
+      "officialOffersPage": "https://www.netto-online.de/",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    },
+    {
+      "id": "trinkgut",
+      "name": "Trink gut",
+      "officialWebsite": "https://www.trinkgut.de/",
+      "officialOffersPage": "https://www.trinkgut.de/",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    },
+    {
+      "id": "dm",
+      "name": "dm",
+      "officialWebsite": "https://www.dm.de/",
+      "officialOffersPage": "https://www.dm.de/",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    },
+    {
+      "id": "combi",
+      "name": "combi",
+      "officialWebsite": "https://www.combi.de/",
+      "officialOffersPage": "https://www.combi.de/",
+      "region": "Meschede, 59872 (Filialgültigkeit vor Verwendung prüfen)",
+      "sourceType": "official_webpage_reference_only",
+      "automatedReadable": false,
+      "integrationStatus": "not_implemented_no_authorized_structured_feed",
+      "permissions": "Eine ausdrücklich zulässige strukturierte Datenquelle und regionale/zeitliche Validierung notwendig",
+      "lastSuccessfulFetch": null,
+      "feedUrl": null
+    }
+  ]
+}

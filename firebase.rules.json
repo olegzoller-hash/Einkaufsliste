@@ -1,0 +1,20 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "lists": {
+      "$listId": {
+        ".read": "auth != null && $listId.matches(/^[a-f0-9]{64}$/)",
+        ".write": "auth != null && $listId.matches(/^[a-f0-9]{64}$/)",
+        ".validate": "newData.hasChild('createdAt')",
+        "createdAt": {".validate": "newData.isNumber() && ( !data.exists() || newData.val() === data.val() )"},
+        "items": {
+          "$itemId": {
+            ".validate": "newData.hasChildren(['name','createdAt']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 120 && newData.child('createdAt').isNumber() && (!newData.child('market').exists() || (newData.child('market').isString() && newData.child('market').val().matches(/^(hit|aldi-nord|lidl|netto|trinkgut|dm|combi)$/))) && (!newData.child('manual').exists() || newData.child('manual').isBoolean())"
+          }
+        },
+        "$other": {".validate": false}
+      }
+    }
+  }
+}

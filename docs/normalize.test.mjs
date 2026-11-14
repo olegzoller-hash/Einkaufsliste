@@ -1,0 +1,2 @@
+import assert from 'node:assert/strict';import {norm,compatible,parseItem,assign} from './normalize.js';
+assert.equal(norm('Äpfel'), 'aepfel');assert.equal(compatible('Gurke','Salatgurke'),true);assert.equal(compatible('Milch','Hafermilch'),false);assert.equal(parseItem('Butter (Lidl)').market,'lidl');assert.equal(parseItem('Butter').market,null);assert.equal(assign([{id:'x',name:'Milch'}],[])[0].displayMarket,null);console.log('6 JS-Assertions bestanden');
