@@ -24,10 +24,23 @@ function selectMarket(i){let d=$('marketDialog'),buttons=$('marketButtons');butt
 async function deleteItem(i){try{await remove(ref(db,`lists/${listId}/items/${i.id}`));undoItem={...i};$('toastText').textContent=i.name+' entfernt';$('toast').hidden=false;clearTimeout(undoTimer);undoTimer=setTimeout(()=>{$('toast').hidden=true;undoItem=null},5500)}catch(e){error(e)}}
 $('undo').onclick=async()=>{if(!undoItem)return;let i=undoItem;undoItem=null;$('toast').hidden=true;try{let r=ref(db,`lists/${listId}/items/${i.id}`);if(!(await get(r)).exists()){let {id,displayMarket,deal,...rest}=i;await set(r,rest)}}catch(e){error(e)}};
 $('addForm').onsubmit=async e=>{e.preventDefault();let s=$('product').value.trim();if(!s)return;let i=parseItem(s);if(!i.name)return;try{await set(push(ref(db,`lists/${listId}/items`)),{name:i.name,market:i.market,manual:i.manual,createdAt:Date.now()});$('product').value=''}catch(e){error(e)}};
-$('refresh').onclick=loadOffers;
+// Bei geöffnetem Fenster alle 60 Minuten und bei Rückkehr zur App aktualisieren.
+// Der Firebase-onValue-Listener ruft render() zusätzlich bei jeder Listenänderung auf.
+let refreshInFlight=null;
+function refreshOffers(){
+  if(refreshInFlight)return refreshInFlight;
+  refreshInFlight=loadOffers().finally(()=>{refreshInFlight=null});
+  return refreshInFlight;
+}
+$('refresh').onclick=refreshOffers;
+window.addEventListener('focus',()=>{if(listId)refreshOffers()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&listId)refreshOffers()});
+window.addEventListener('online',()=>{if(listId)refreshOffers()});
+setInterval(()=>{if(!document.hidden&&listId)refreshOffers();else if(listId)render()},60*60*1000);
+
 $('joinForm').onsubmit=e=>{e.preventDefault();const id=idFromInvitation($('joinLink').value);if(!id){$('setupHint').textContent='Bitte den vollständigen Einladungslink dieser App einfügen.';return}rememberId(id);location.hash='list='+id;if(auth?.currentUser)show()};
 $('share').onclick=async()=>{let u=link();try{if(navigator.share)await navigator.share({title:'Natur Einkaufsliste',url:u});else{await navigator.clipboard.writeText(u);status('Einladungslink kopiert')}}catch(e){if(e.name!=='AbortError'){window.prompt('Diesen Link kopieren:',u)}}};
 $('create').onclick=async()=>{if(!ready)return $('setupHint').textContent='Zuerst docs/config.js einrichten.';if(!auth.currentUser)return $('setupHint').textContent='Verbindung wird aufgebaut ...';let id=randomId();try{await set(ref(db,`lists/${id}`),{createdAt:Date.now()});rememberId(id);location.hash='list='+id}catch(e){$('setupHint').textContent='Fehler: '+(e.code||e.message)}};
 window.addEventListener('hashchange',()=>{if(auth.currentUser)show()});
-if(!ready){$('setupHint').textContent='Firebase ist noch nicht eingerichtet. Bitte docs/config.js nach Anleitung erstellen.'}else{try{let app=initializeApp(cfg);auth=getAuth(app);db=getDatabase(app);onAuthStateChanged(auth,u=>{if(u){show();loadOffers()}else signInAnonymously(auth).catch(error)});signInAnonymously(auth).catch(error)}catch(e){$('setupHint').textContent=e.message}}
+if(!ready){$('setupHint').textContent='Firebase ist noch nicht eingerichtet. Bitte docs/config.js nach Anleitung erstellen.'}else{try{let app=initializeApp(cfg);auth=getAuth(app);db=getDatabase(app);onAuthStateChanged(auth,u=>{if(u){show();refreshOffers()}else signInAnonymously(auth).catch(error)});signInAnonymously(auth).catch(error)}catch(e){$('setupHint').textContent=e.message}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js').catch(console.warn);
