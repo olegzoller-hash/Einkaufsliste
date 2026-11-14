@@ -1,7 +1,7 @@
-name: Angebotsdaten aktualisieren
+name: Natur - Angebote taeglich aktualisieren
 on:
   schedule:
-    - cron: '0 8 * * 0'
+    - cron: '0 8 * * *'
       timezone: 'Europe/Berlin'
   workflow_dispatch:
 permissions:
@@ -12,26 +12,26 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Testen
+      - name: Python-Adapter testen
         run: python -m unittest discover -s scripts/tests -v
-      - name: Quellen auswerten
+      - name: Angebotsquellen pruefen
         run: python scripts/update_offers.py
-      - name: Änderungen speichern
+      - name: Status und neue Angebote speichern
+        if: always()
         run: |
-          if ! git diff --quiet -- docs/offers.json; then
+          if ! git diff --quiet -- docs/offers.json docs/source-status.json; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add docs/offers.json
-            git commit -m "Aktualisiere Angebotsdaten"
+            git add docs/offers.json docs/source-status.json
+            git commit -m "Update offer and source status"
+            git pull --rebase
             git push
           else
-            echo "Keine Änderungen"
+            echo "Keine geaenderten Daten"
           fi
