@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-11-14T23:10:47Z",
+  "sources": [
+    {
+      "market": "hit",
+      "status": "disabled",
+      "offers": 0
+    },
+    {
+      "market": "aldi-nord",
+      "status": "disabled",
+      "offers": 0
+    },
+    {
+      "market": "lidl",
+      "status": "disabled",
+      "offers": 0
+    },
+    {
+      "market": "netto",
+      "status": "disabled",
+      "offers": 0
+    },
+    {
+      "market": "trinkgut",
+      "status": "disabled",
+      "offers": 0
+    },
+    {
+      "market": "dm",
+      "status": "disabled",
+      "offers": 0
+    },
+    {
+      "market": "combi",
+      "status": "disabled",
+      "offers": 0
+    }
+  ],
+  "errors": []
+}
